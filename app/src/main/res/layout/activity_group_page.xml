@@ -27,4 +27,15 @@
         android:paddingTop="?attr/actionBarSize"
         android:paddingBottom="5dp"
         android:clipToPadding="false"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="25dp"
+        app:backgroundTint="#245a7e"
+        android:clickable="true"
+        android:src="@mipmap/plus" />
 </RelativeLayout>

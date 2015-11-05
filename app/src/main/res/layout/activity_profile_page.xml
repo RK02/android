@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="60"
+            android:layout_weight="76"
             android:gravity="center"
             android:padding="16dp">
             <TextView
@@ -29,25 +29,27 @@
                 android:textColor="#f6f6f6"/>
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="20">
+            android:layout_weight="12"
+            android:gravity="center">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:id="@+id/iv_edit"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:src="@mipmap/edit" />
-        </RelativeLayout>
+        </LinearLayout>
         <LinearLayout
+            android:id="@+id/settings"
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="20">
+            android:layout_weight="12">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:id="@+id/iv_settings"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:src="@mipmap/settings_profile" />
         </LinearLayout>
     </LinearLayout>

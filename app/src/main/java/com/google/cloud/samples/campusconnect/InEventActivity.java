@@ -1,9 +1,11 @@
 package com.google.cloud.samples.campusconnect;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -15,6 +17,7 @@ public class InEventActivity extends AppCompatActivity {
     int share_click_count=0;
     Integer flag_news_top,pos_top,pos_cf;
     Integer flag_news_college_feed;
+    RelativeLayout group_info;
     ImageView event_photo,location_icon, going,share;
     TextView e_name, e_time, e_date, g_name, v_name, e_description;
     CircularImageView g_icon;
@@ -23,6 +26,7 @@ public class InEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_event);
 
+        group_info = (RelativeLayout) findViewById(R.id.group_info_group);
         event_photo = (ImageView) findViewById(R.id.iv_event);
         location_icon = (ImageView) findViewById(R.id.iv_location);
         going = (ImageView) findViewById(R.id.heart_going);
@@ -41,11 +45,11 @@ public class InEventActivity extends AppCompatActivity {
         String e_Name = bundle.getString("E_NAME");
         String e_Time = bundle.getString("E_TIME");
         String e_Date = bundle.getString("E_DATE");
-        String g_Name = bundle.getString("G_NAME");
+        final String g_Name = bundle.getString("G_NAME");
         String v_Name = bundle.getString("V_NAME");
         String e_Description = bundle.getString("E_DESCRIPTION");
-        Integer e_Photo = bundle.getInt("E_PHOTO");
-        Integer g_Logo = bundle.getInt("G_PHOTO");
+        final Integer e_Photo = bundle.getInt("E_PHOTO");
+        final Integer g_Logo = bundle.getInt("G_PHOTO");
         flag_news_top = bundle.getInt("FLAG_NEWS_TOP");
         flag_news_college_feed = bundle.getInt("FLAG_NEWS_CF");
         pos_top = bundle.getInt("POSITION_TOP");
@@ -76,7 +80,7 @@ public class InEventActivity extends AppCompatActivity {
                 if (going_click_count % 2 == 0) {
                     going.setAlpha((float) 1);
                 } else {
-            going.setImageResource(R.drawable.selector_heart);
+                    going.setImageResource(R.drawable.selector_heart);
                     going.setAlpha((float) 0.5);
                 }
                 going_click_count++;
@@ -85,13 +89,49 @@ public class InEventActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(share_click_count%2==0) {
+                if (share_click_count % 2 == 0) {
                     share.setAlpha((float) 1);
-                }
-                else {
+                } else {
                     share.setAlpha((float) 0.5);
                 }
                 share_click_count++;
+            }
+        });
+
+        group_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /*I think what you guys can do here is get the data from the server of that particular group,
+                  add it to the bundle and then send it to GroupPageActivity. The group name and group logo is ready
+                  but members count and followers count needs to be pulled from the server.
+                 */
+                Bundle bundle = new Bundle();
+                bundle.putString("G_NAME", g_Name);
+                bundle.putInt("G_ICON", g_Logo);
+                bundle.putInt("F_COUNT", 35);
+                bundle.putInt("M_COUNT", 55);
+                Intent intent_temp = new Intent(v.getContext(), GroupPageActivity.class);
+                intent_temp.putExtras(bundle);
+                startActivity(intent_temp);
+
+            }
+        });
+
+        event_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /*I think what you guys can do here is get the data from the server of that particular group,
+                  add it to the bundle and then send it to GroupPageActivity. The group name and group logo is ready
+                  but members count and followers count needs to be pulled from the server.
+                 */
+                Bundle bundle = new Bundle();
+                bundle.putInt("E_PHOTO", e_Photo);
+                Intent intent_temp = new Intent(v.getContext(), EventPhotoFullScreenActivity.class);
+                intent_temp.putExtras(bundle);
+                startActivity(intent_temp);
+
             }
         });
 

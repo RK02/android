@@ -554,7 +554,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             group_list.setAdapter(gl);
-            gl.notifyDataSetChanged();
+            //gl.notifyDataSetChanged();
 
             create_group.setOnClickListener(new View.OnClickListener() {
                 @Override

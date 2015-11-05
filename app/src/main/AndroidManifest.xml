@@ -86,6 +86,34 @@
             android:name=".SearchActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name=".EventPhotoFullScreenActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".ProfileMenuActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".AboutGroupActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".GroupMembersByGroupActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".UpcomingEventsActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".NewsPostsByGroupActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".PreviousEventsActivity"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>

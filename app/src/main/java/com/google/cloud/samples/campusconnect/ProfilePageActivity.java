@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ public class ProfilePageActivity extends ActionBarActivity {
     RecyclerView groups_joined;
     int top=0;
     ImageButton noti,profile,home,calendar,search;
+    LinearLayout settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,8 @@ public class ProfilePageActivity extends ActionBarActivity {
         profile = (ImageButton) findViewById(R.id.ib_profile);
         calendar = (ImageButton) findViewById(R.id.ib_calendar);
         search = (ImageButton) findViewById(R.id.ib_search);
+
+        settings = (LinearLayout) findViewById(R.id.settings);
 
         groups_joined = (RecyclerView) findViewById(R.id.recycler_groups);
 
@@ -94,6 +99,16 @@ public class ProfilePageActivity extends ActionBarActivity {
             public void onClick(View v) {
 
                 Intent intent_temp = new Intent(v.getContext(), SearchActivity.class);
+                startActivity(intent_temp);
+
+            }
+        });
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent_temp = new Intent(v.getContext(), ProfileMenuActivity.class);
                 startActivity(intent_temp);
 
             }

@@ -1,10 +1,12 @@
 package com.google.cloud.samples.campusconnect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.appspot.campus_connect_2015.clubs.Clubs;
@@ -34,7 +37,9 @@ import java.util.List;
 public class GroupPageActivity extends ActionBarActivity {
 
     RecyclerView group_page;
-
+    public static FloatingActionButton fab_post_from_group_page;
+    int flag_coming_from_group_page=1;
+    GroupPageAdapterActivity gp;
     private static final String LOG_TAG="GroupPageActivity";
 
     @Override
@@ -43,6 +48,7 @@ public class GroupPageActivity extends ActionBarActivity {
         setContentView(R.layout.activity_group_page);
 
         group_page = (RecyclerView) findViewById(R.id.recycler_group_page);
+        fab_post_from_group_page = (FloatingActionButton) findViewById(R.id.fab_post);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -50,8 +56,23 @@ public class GroupPageActivity extends ActionBarActivity {
         group_page.setHasFixedSize(true);
         group_page.setItemAnimator(new DefaultItemAnimator());
 
-        GroupPageAdapterActivity gp = new GroupPageAdapterActivity(
+        gp = new GroupPageAdapterActivity(
                 createList_group_page(6));
+
+        fab_post_from_group_page.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                flag_coming_from_group_page = 1;
+                Bundle bun = new Bundle();
+                bun.putString("G_NAME", gp.get_group_name());
+                bun.putInt("FLAG",flag_coming_from_group_page);
+                Intent intent_temp = new Intent(v.getContext(), CreatePostActivity.class);
+                intent_temp.putExtras(bun);
+                startActivity(intent_temp);
+
+            }
+        });
 
         group_page.setAdapter(gp);
     }

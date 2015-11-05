@@ -1,5 +1,7 @@
 package com.google.cloud.samples.campusconnect;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -17,9 +19,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.appspot.campus_connect_2015.clubs.Clubs;
@@ -42,6 +48,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by RK on 07-10-2015.
@@ -49,11 +56,15 @@ import java.util.List;
 public class CreatePostActivity extends AppCompatActivity {
 
     private static final String LOG_TAG="CreatePostActivity";
+    ImageButton close;
     ViewPager pager;
     ViewPagerAdapter_CreatePost adapter;
     SlidingTabLayout_CreatePost tabs;
     public static Button post;
     CharSequence Titles[]={"Event","News"};
+
+    int flag_coming_from_group_page=0;
+    String group_name_from_group_page;
 
     List<ModelsClubMiniForm> modelsClubMiniForms;
 
@@ -65,6 +76,8 @@ public class CreatePostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
+
+        close = (ImageButton) findViewById(R.id.ib_cancel);
 
         post = (Button) findViewById(R.id.b_post);
 
@@ -78,6 +91,21 @@ public class CreatePostActivity extends AppCompatActivity {
         tabs.setViewPager(pager);
         sharedPreferences = getSharedPreferences(AppConstants.SHARED_PREFS, Context.MODE_PRIVATE);
         mEmailAccount = sharedPreferences.getString(AppConstants.EMAIL_KEY, null);
+
+        Bundle bun = getIntent().getExtras();
+        if(bun!=null) {
+            group_name_from_group_page = bun.getString("G_NAME");
+            flag_coming_from_group_page = bun.getInt("FLAG");
+        }
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+
+            }
+        });
 
     }
 
@@ -307,38 +335,50 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
 
-    public class FragmentPostNews extends Fragment {
+    public class FragmentPostEvent extends Fragment {
         RelativeLayout group_name_post;
         TextView group_selected_text_post;
+        ImageView dropdown_indicator;
         EditText et_title,et_description,et_date,et_time,et_venue,et_tags;
         ModelsPostMiniForm pmf = new ModelsPostMiniForm();
         int position;
+        TextView s_date, e_date, s_time, e_time;
+        Calendar myCalendar_s_date, myCalendar_e_date;
+        Context context;
+        DatePickerDialog.OnDateSetListener start_date, end_date;
+        int start_hour, start_min;
 
         private  static final  String LOG_TAG="CreatePostActivity";
 
 
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.fragment_post_news, container, false);
+            View v = inflater.inflate(R.layout.fragment_post_event, container, false);
+
+            context = v.getContext();
 
             group_name_post = (RelativeLayout) v.findViewById(R.id.group_select_when_posting);
             group_selected_text_post = (TextView) v.findViewById(R.id.tv_group_name_selected_when_posting);
 
             et_title = (EditText) v.findViewById(R.id.et_post_title);
             et_description = (EditText) v.findViewById(R.id.et_post_description);
-            et_date = (EditText) v.findViewById(R.id.et_date);
-            et_time = (EditText) v.findViewById(R.id.et_time);
+            s_date = (TextView) v.findViewById(R.id.et_start_date);
+            e_date = (TextView) v.findViewById(R.id.et_end_date);
+            s_time = (TextView) v.findViewById(R.id.et_start_time);
+            e_time = (TextView) v.findViewById(R.id.et_end_time);
             et_tags = (EditText) v.findViewById(R.id.et_tags);
 
-            group_name_post.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            dropdown_indicator = (ImageView) v.findViewById(R.id.iv_downarrow);
+
+            if(flag_coming_from_group_page==0) {
+                group_name_post.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
 
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                    builder.setTitle("Group:");
-                    if(CreatePostActivity.this.modelsClubMiniForms==null){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                        builder.setTitle("Group:");
+                        if (CreatePostActivity.this.modelsClubMiniForms == null) {
 //                        builder.setItems(items, new DialogInterface.OnClickListener() {
 //
 //                            public void onClick(DialogInterface dialog, int item) {
@@ -350,31 +390,34 @@ public class CreatePostActivity extends AppCompatActivity {
 //                        });
 //                        AlertDialog alert = builder.create();
 //                        alert.show();
-                        group_selected_text_post.setText("Loading Groups");
-                    }
-                    else
-                    {
-                        String[] groupList=new String[CreatePostActivity.this.modelsClubMiniForms.size()];
-                        for(int i=0;i<modelsClubMiniForms.size();i++){
-                            groupList[i]=modelsClubMiniForms.get(i).getAbbreviation();
-                        }
-                        builder.setItems(groupList, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                // Do something with the selection
-                                position = item;
-                                group_selected_text_post.setText(CreatePostActivity.this.modelsClubMiniForms.get(position).getAbbreviation());
-                                pmf.setClubId(CreatePostActivity.this.modelsClubMiniForms.get(position).getClubId());
-                                Log.e(LOG_TAG+"CLUB",pmf.getClubId()+" "+group_selected_text_post);
+                            group_selected_text_post.setText("Loading Groups");
+                        } else {
+                            String[] groupList = new String[CreatePostActivity.this.modelsClubMiniForms.size()];
+                            for (int i = 0; i < modelsClubMiniForms.size(); i++) {
+                                groupList[i] = modelsClubMiniForms.get(i).getAbbreviation();
                             }
-                        });
-                        AlertDialog alert = builder.create();
-                        alert.show();
+                            builder.setItems(groupList, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int item) {
+                                    // Do something with the selection
+                                    position = item;
+                                    group_selected_text_post.setText(CreatePostActivity.this.modelsClubMiniForms.get(position).getAbbreviation());
+                                    pmf.setClubId(CreatePostActivity.this.modelsClubMiniForms.get(position).getClubId());
+                                    Log.e(LOG_TAG + "CLUB", pmf.getClubId() + " " + group_selected_text_post);
+                                }
+                            });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
+
                     }
-
-
-
-                }
-            });
+                });
+            }
+            else
+            {
+                flag_coming_from_group_page = 0;
+                group_selected_text_post.setText(group_name_from_group_page);
+                dropdown_indicator.setVisibility(View.GONE);
+            }
 
             CreatePostActivity.post.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -414,19 +457,170 @@ public class CreatePostActivity extends AppCompatActivity {
                     pmf.setFromPid(sharedPreferences.getString(AppConstants.PERSON_PID, null));
 
                     CreatePostActivity.this.createPost(pmf);
+
+                    /*Toast.makeText(getActivity().getApplicationContext(), "Your post has been submitted and is pending approval by the admin.",
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+*/
                 }
             });
 
+            myCalendar_s_date = Calendar.getInstance();
+            myCalendar_e_date = Calendar.getInstance();
+            start_date = new DatePickerDialog.OnDateSetListener() {
 
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                      int dayOfMonth) {
+                    // TODO Auto-generated method stub
+                    myCalendar_s_date.set(Calendar.YEAR, year);
+                    myCalendar_s_date.set(Calendar.MONTH, monthOfYear);
+                    myCalendar_s_date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    updateLabel_start();
+                }
 
+            };
+
+            end_date = new DatePickerDialog.OnDateSetListener() {
+
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                      int dayOfMonth) {
+                    // TODO Auto-generated method stub
+                    myCalendar_e_date.set(Calendar.YEAR, year);
+                    myCalendar_e_date.set(Calendar.MONTH, monthOfYear);
+                    myCalendar_e_date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    updateLabel_end();
+                }
+            };
+
+            s_date.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    DatePickerDialog start_date_picker = new DatePickerDialog(context, start_date, myCalendar_s_date
+                            .get(Calendar.YEAR), myCalendar_s_date.get(Calendar.MONTH),
+                            myCalendar_s_date.get(Calendar.DAY_OF_MONTH));
+
+                    start_date_picker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                    start_date_picker.show();
+                }
+            });
+
+            e_date.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    DatePickerDialog end_date_picker = new DatePickerDialog(context, end_date, myCalendar_e_date
+                            .get(Calendar.YEAR), myCalendar_e_date.get(Calendar.MONTH),
+                            myCalendar_e_date.get(Calendar.DAY_OF_MONTH));
+                    end_date_picker.getDatePicker().setMinDate(System.currentTimeMillis() + 1000);
+                    end_date_picker.show();
+                }
+            });
+
+            s_time.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    Calendar mcurrentTime = Calendar.getInstance();
+                    final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                    final int minute = mcurrentTime.get(Calendar.MINUTE);
+                    TimePickerDialog mTimePicker;
+                    mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            start_hour = selectedHour;
+                            start_min = selectedMinute;
+                            if(selectedHour>hour)
+                                s_time.setText("" + selectedHour + ":" + selectedMinute);
+                            else if(selectedHour==hour){
+                                if(selectedMinute>minute)
+                                    s_time.setText("" + selectedHour + ":" + selectedMinute);
+                                else
+                                    Toast.makeText(getActivity().getApplicationContext(), "The start time you entered occurred before the current time.",
+                                            Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                                Toast.makeText(getActivity().getApplicationContext(), "The start time you entered occurred before the current time.",
+                                        Toast.LENGTH_SHORT).show();
+
+                        }
+                    }, hour, minute, true);
+                    mTimePicker.setTitle("Select Time");
+                    mTimePicker.show();
+
+                }
+            });
+
+            e_time.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    Calendar mcurrentTime = Calendar.getInstance();
+                    final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                    final int minute = mcurrentTime.get(Calendar.MINUTE);
+                    TimePickerDialog mTimePicker;
+                    mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            if(selectedHour>start_hour)
+                                e_time.setText("" + selectedHour + ":" + selectedMinute);
+                            else if(selectedHour==start_hour){
+                                if(selectedMinute>start_min)
+                                    e_time.setText("" + selectedHour + ":" + selectedMinute);
+                                else
+                                    Toast.makeText(getActivity().getApplicationContext(), "The end time you entered occurred before the start time.",
+                                            Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                                Toast.makeText(getActivity().getApplicationContext(), "The end time you entered occurred before the start time.",
+                                        Toast.LENGTH_SHORT).show();
+                        }
+                    }, hour, minute, true);
+                    mTimePicker.setTitle("Select Time");
+                    mTimePicker.show();
+
+                }
+            });
 
             return v;
         }
 
+        private void updateLabel_start() {
+
+            String myFormat = "MM/dd/yy"; //In which you need put here
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+            if(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) > myCalendar_s_date.get(Calendar.DAY_OF_MONTH)) {
+                s_date.setText("");
+                Toast.makeText(getActivity().getApplicationContext(), "The start date you entered occurred before the current date.",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else
+                s_date.setText(sdf.format(myCalendar_s_date.getTime()));
+
+        }
+        private void updateLabel_end() {
+
+            String myFormat = "MM/dd/yy"; //In which you need put here
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            if(myCalendar_s_date.get(Calendar.DAY_OF_MONTH) > myCalendar_e_date.get(Calendar.DAY_OF_MONTH)) {
+                e_date.setText("");
+                Toast.makeText(getActivity().getApplicationContext(), "The end date you entered occurred before the start date.",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else
+                e_date.setText(sdf.format(myCalendar_e_date.getTime()));
+        }
 
     }
 
-    public class FragmentPostEvent extends Fragment {
+    public class FragmentPostNews extends Fragment {
 
         RelativeLayout group_name_post;
         TextView group_selected_text_post;
@@ -437,7 +631,7 @@ public class CreatePostActivity extends AppCompatActivity {
         String test;
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.fragment_post_event, container, false);
+            View v = inflater.inflate(R.layout.fragment_post_news, container, false);
             group_name_post = (RelativeLayout) v.findViewById(R.id.group_select_when_posting);
             group_selected_text_post = (TextView) v.findViewById(R.id.tv_group_name_selected_when_posting);
             et_title = (EditText) v.findViewById(R.id.et_post_title);

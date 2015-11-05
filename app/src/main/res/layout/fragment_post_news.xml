@@ -76,7 +76,7 @@
                     android:layout_marginTop="20dp"
                     android:textSize="17sp"
                     android:hint="Title"
-                    android:textColorHint="#d9d9d9"
+                    android:textColorHint="#b3b3b3"
                     android:textColor="#000000"/>
                 <EditText
                     android:id="@+id/et_post_description"
@@ -88,69 +88,23 @@
                     android:layout_marginTop="10dp"
                     android:textSize="17sp"
                     android:hint="Description"
-                    android:textColorHint="#d9d9d9"
+                    android:textColorHint="#b3b3b3"
                     android:textColor="#000000"
                     android:gravity="top|left"
                     android:singleLine="false"
                     android:lines="5"
                     android:inputType="textMultiLine"/>
-                <LinearLayout
-                    android:id="@+id/date_time_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:weightSum="2"
-                    android:orientation="horizontal"
-                    android:layout_below="@+id/et_post_description"
-                    android:layout_marginTop="10dp">
-                    <EditText
-                        android:id="@+id/et_date"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/edittext_rounded"
-                        android:padding="10dp"
-                        android:textSize="17sp"
-                        android:hint="Date"
-                        android:textColorHint="#d9d9d9"
-                        android:textColor="#000000"/>
-                    <EditText
-                        android:id="@+id/et_time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/edittext_rounded"
-                        android:padding="10dp"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:hint="Time"
-                        android:textColorHint="#d9d9d9"
-                        android:textColor="#000000"/>
-                </LinearLayout>
-
-                <EditText
-                    android:id="@+id/et_venue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/date_time_group"
-                    android:background="@drawable/edittext_rounded"
-                    android:padding="10dp"
-                    android:layout_marginTop="10dp"
-                    android:textSize="17sp"
-                    android:hint="Venue"
-                    android:textColorHint="#d9d9d9"
-                    android:textColor="#000000"/>
                 <EditText
                     android:id="@+id/et_tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/et_venue"
+                    android:layout_below="@+id/et_post_description"
                     android:background="@drawable/edittext_rounded"
                     android:padding="10dp"
                     android:layout_marginTop="10dp"
                     android:textSize="17sp"
                     android:hint="Tags"
-                    android:textColorHint="#d9d9d9"
+                    android:textColorHint="#b3b3b3"
                     android:textColor="#000000"/>
             </RelativeLayout>
         </RelativeLayout>
